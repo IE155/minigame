@@ -8,7 +8,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: #0a0a0a;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,146 +16,190 @@ body {
     font-family: 'Arial', 'Microsoft YaHei', sans-serif;
     color: white;
     overflow: hidden;
-    touch-action: none;
 }
 
 #gameContainer {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
-#gameHeader {
+#canvasContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#canvasContainer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ========== 速度模糊效果 ========== */
+#speedBlur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.1s ease;
+    mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+}
+
+/* ========== HUD ========== */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    padding: 20px;
+}
+
+#hudTop {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 0 10px 15px 10px;
+    align-items: flex-start;
 }
 
-#gameHeader h1 {
+#hudTop > div {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    min-width: 90px;
+}
+
+.hud-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+#lapValue, #timerValue, #rankValue {
     font-size: 24px;
-    background: linear-gradient(135deg, #f7971e, #ffd200);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-}
-
-#score {
-    font-size: 20px;
     font-weight: bold;
     color: #ffd700;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 8px 20px;
-    border-radius: 30px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
-#gameArea {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-    touch-action: none;
-}
-
-#gameCanvas {
-    display: block;
-    background: #2c3e50;
-    width: 400px;
-    height: 600px;
-    touch-action: none;
-}
-
-/* ========== 虚拟摇杆 ========== */
-#joystickContainer {
+#hudBottom {
     position: absolute;
-    bottom: 30px;
-    left: 30px;
-    width: 130px;
-    height: 130px;
-    z-index: 5; /* 降低层级，让开始界面在上面 */
-    touch-action: none;
-    display: block !important;
-    pointer-events: auto; /* 允许点击 */
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
-#joystickBase {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+#speedometer {
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
-    touch-action: none;
-    cursor: grab;
-    transition: border-color 0.3s;
+    border-radius: 16px;
+    padding: 15px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
-#joystickBase:hover {
-    border-color: rgba(255, 215, 0, 0.4);
+#speedValue {
+    font-size: 42px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
 }
 
-#joystickBase:active {
-    cursor: grabbing;
+#speedUnit {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 8px;
 }
 
-#joystickBase::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%;
-    height: 60%;
-    border-radius: 50%;
-    border: 2px dashed rgba(255, 255, 255, 0.08);
-}
-
-#joystickBase .dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
+#speedBar {
+    width: 120px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
 }
 
-#joystickBase .dot-top { top: 15%; left: 50%; transform: translateX(-50%); }
-#joystickBase .dot-bottom { bottom: 15%; left: 50%; transform: translateX(-50%); }
-#joystickBase .dot-left { left: 15%; top: 50%; transform: translateY(-50%); }
-#joystickBase .dot-right { right: 15%; top: 50%; transform: translateY(-50%); }
-
-#joystickKnob {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, #ffd700, #f7971e);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 5px 25px rgba(247, 151, 30, 0.4);
-    pointer-events: none;
-    transition: box-shadow 0.2s;
-    touch-action: none;
+#speedFill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #00ff88, #ffd700, #ff4757);
+    border-radius: 3px;
+    transition: width 0.1s ease;
 }
 
-#joystickKnob::after {
-    content: '◆';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: rgba(255, 255, 255, 0.15);
+#driftIndicator {
+    background: rgba(255, 100, 0, 0.8);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: bold;
     font-size: 16px;
+    animation: pulse 0.5s ease infinite alternate;
 }
 
-#joystickKnob.active {
-    box-shadow: 0 5px 35px rgba(247, 151, 30, 0.7);
+@keyframes pulse {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(1.05); opacity: 1; }
+}
+
+#lapTimes {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 140px;
+}
+
+.lap-time-item {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lap-time-item.best {
+    color: #ffd700;
+}
+
+/* ========== 小地图 ========== */
+#minimap {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    z-index: 10;
+}
+
+#minimapCanvas {
+    width: 100%;
+    height: 100%;
 }
 
 /* ========== 开始界面 ========== */
@@ -170,11 +214,10 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
     z-index: 20;
     padding: 20px;
     animation: fadeIn 0.5s ease;
-    pointer-events: auto; /* 允许点击 */
 }
 
 #startContent {
@@ -182,120 +225,58 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    max-width: 400px;
     width: 100%;
-    max-width: 350px;
-    pointer-events: auto; /* 确保子元素可点击 */
 }
 
 #startScreen h2 {
-    font-size: 38px;
-    margin-bottom: 20px;
+    font-size: 42px;
+    margin-bottom: 10px;
     background: linear-gradient(135deg, #f7971e, #ffd200);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    pointer-events: none;
 }
 
-#lifeSelector {
+#gameDesc {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 30px;
+}
+
+#controlsInfo {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     padding: 20px 30px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
     width: 100%;
-    pointer-events: auto;
 }
 
-#lifeSelector label {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
-    display: block;
-    margin-bottom: 12px;
-    pointer-events: none;
-}
-
-#lifeControls {
+.control-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 12px;
-    pointer-events: auto;
-}
-
-#lifeControls button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-}
-
-#lifeControls button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: #ffd700;
-    transform: scale(1.05);
-}
-
-#lifeControls button:active {
-    transform: scale(0.9);
-}
-
-#lifeDisplay {
-    font-size: 36px;
-    font-weight: bold;
-    color: #ffd700;
-    min-width: 50px;
-    text-align: center;
-    pointer-events: none;
-}
-
-#lifePresets {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    pointer-events: auto;
-}
-
-.presetBtn {
-    padding: 4px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 14px;
-    transition: all 0.3s ease;
-    pointer-events: auto;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.presetBtn:hover {
-    background: rgba(255, 215, 0, 0.2);
-    border-color: #ffd700;
-    color: #ffd700;
+.control-row:last-child {
+    border-bottom: none;
 }
 
-.presetBtn.active {
-    background: rgba(255, 215, 0, 0.25);
-    border-color: #ffd700;
+.control-row span {
+    font-weight: bold;
     color: #ffd700;
+    min-width: 80px;
 }
 
 #startBtn {
     background: linear-gradient(135deg, #f7971e, #ffd200);
     color: #1a1a2e;
     border: none;
-    padding: 14px 50px;
+    padding: 16px 60px;
     font-size: 22px;
     font-weight: bold;
     border-radius: 30px;
@@ -303,8 +284,6 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 5px 30px rgba(247, 151, 30, 0.4);
     pointer-events: auto;
-    position: relative;
-    z-index: 25;
 }
 
 #startBtn:hover {
@@ -316,184 +295,143 @@ body {
     transform: scale(0.95);
 }
 
-#controlsHint {
-    margin-top: 15px;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.4);
-    pointer-events: none;
-}
-
 /* ========== 游戏结束界面 ========== */
 #gameOver {
-    display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     padding: 40px 50px;
     border-radius: 20px;
     text-align: center;
-    border: 2px solid #ff6b6b;
-    box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
     animation: fadeIn 0.5s ease;
     z-index: 25;
     pointer-events: auto;
+    min-width: 320px;
 }
 
-#gameOver h2 {
+#gameOverTitle {
     font-size: 36px;
-    color: #ff6b6b;
-    margin-bottom: 15px;
-    pointer-events: none;
-}
-
-#gameOver p {
-    font-size: 20px;
-    color: #ddd;
-    margin-bottom: 20px;
-    pointer-events: none;
-}
-
-#gameOver #finalScore {
     color: #ffd700;
-    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#finalResults {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+.result-row span:first-child {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.result-row span:last-child {
+    color: #ffd700;
     font-weight: bold;
+    font-size: 18px;
 }
 
 #restartBtn {
     background: linear-gradient(135deg, #f7971e, #ffd200);
     color: #1a1a2e;
     border: none;
-    padding: 12px 40px;
-    font-size: 18px;
+    padding: 14px 50px;
+    font-size: 20px;
     font-weight: bold;
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 20px rgba(247, 151, 30, 0.4);
+    box-shadow: 0 5px 30px rgba(247, 151, 30, 0.4);
     pointer-events: auto;
 }
 
 #restartBtn:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(247, 151, 30, 0.6);
+    box-shadow: 0 8px 40px rgba(247, 151, 30, 0.6);
 }
 
 #restartBtn:active {
     transform: scale(0.95);
 }
 
-/* ========== 底部控制 ========== */
-#controls {
-    text-align: center;
-    padding-top: 15px;
+/* ========== 碰撞提示 ========== */
+#collisionText {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff4757;
+    text-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+    z-index: 15;
+    pointer-events: none;
+    animation: collisionPop 0.8s ease forwards;
 }
 
-#controls p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 5px;
+@keyframes collisionPop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -40%) scale(1); }
+}
+
+/* ========== 倒计时 ========== */
+#countdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#countdownNum {
+    font-size: 120px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+    animation: countPop 0.9s ease;
+}
+
+@keyframes countPop {
+    0% { transform: scale(2); opacity: 0; }
+    30% { transform: scale(1); opacity: 1; }
+    70% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* ========== 动画 ========== */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 /* ========== 响应式 ========== */
-@media (max-width: 480px) {
-    #gameContainer {
-        padding: 10px;
-        border-radius: 12px;
-    }
-    
-    #gameHeader h1 {
-        font-size: 18px;
-    }
-    
-    #score {
-        font-size: 16px;
-        padding: 5px 15px;
-    }
-    
-    #gameCanvas {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 2 / 3;
-    }
-    
-    #joystickContainer {
-        width: 95px;
-        height: 95px;
-        bottom: 20px;
-        left: 15px;
-    }
-    
-    #joystickBase {
-        width: 95px;
-        height: 95px;
-    }
-    
-    #joystickKnob {
-        width: 40px;
-        height: 40px;
-    }
-    
-    #startScreen h2 {
-        font-size: 28px;
-    }
-    
-    #lifeSelector {
-        padding: 15px 20px;
-        width: 100%;
-        max-width: 280px;
-    }
-    
-    #lifeDisplay {
-        font-size: 28px;
-    }
-    
-    #startBtn {
-        padding: 12px 35px;
-        font-size: 18px;
-    }
-    
-    #gameOver {
-        padding: 25px 30px;
-    }
-    
-    #gameOver h2 {
-        font-size: 28px;
-    }
-    
-    #controls p {
-        font-size: 12px;
-    }
-}
-
-@media (min-width: 481px) and (max-width: 1024px) {
-    #joystickContainer {
-        width: 110px;
-        height: 110px;
-        bottom: 25px;
-        left: 25px;
-    }
-    
-    #joystickBase {
-        width: 110px;
-        height: 110px;
-    }
-    
-    #joystickKnob {
-        width: 46px;
-        height: 46px;
-    }
+@media (max-width: 640px) {
+    #startScreen h2 { font-size: 32px; }
+    #gameOverTitle { font-size: 28px; }
+    #countdownNum { font-size: 80px; }
+    #speedValue { font-size: 32px; }
+    #lapValue, #timerValue, #rankValue { font-size: 18px; }
+    #hud { padding: 10px; }
+    #minimap { width: 100px; height: 100px; bottom: 10px; right: 10px; }
+    #speedometer { padding: 10px 15px; }
+    #gameOver { padding: 25px 30px; min-width: 280px; }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "ws",
+  "name": "minigame",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IE155/ws.git"
+    "url": "git+https://github.com/IE155/minigame.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/IE155/ws/issues"
+    "url": "https://github.com/IE155/minigame/issues"
   },
-  "homepage": "https://github.com/IE155/ws#readme"
+  "homepage": "https://github.com/IE155/minigame#readme"
 }

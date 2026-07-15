@@ -1,0 +1,21 @@
+{
+  "name": "minigame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IE155/minigame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IE155/minigame/issues"
+  },
+  "homepage": "https://github.com/IE155/minigame#readme"
+}

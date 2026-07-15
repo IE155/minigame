@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>游戏大厅 - 3D赛车竞速</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background: #111114;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
+            color: #c8c8c8;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 0 16px;
+        }
+
+        /* ===== 标题区 ===== */
+        .header {
+            margin-bottom: 32px;
+            padding-left: 4px;
+        }
+
+        .title {
+            font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: #e8652b;
+            margin-top: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 游戏卡片 ===== */
+        .game-card {
+            background: #1a1a1e;
+            border: 1px solid #333;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+            padding: 0;
+            margin-bottom: 16px;
+        }
+
+        .game-card-inner {
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .game-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .game-name {
+            font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .game-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .game-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .feature-item {
+            font-size: 11px;
+            font-weight: 500;
+            color: #999;
+            padding: 3px 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #2a2a2e;
+            letter-spacing: 0.3px;
+        }
+
+        .game-image {
+            width: 130px;
+            min-width: 130px;
+            height: 120px;
+            background: #12121a;
+            border: 1px solid #2a2a2e;
+            flex-shrink: 0;
+        }
+
+        /* ===== 开始按钮 ===== */
+        .btn-row {
+            padding: 0 24px 24px 24px;
+        }
+
+        .start-btn {
+            display: block;
+            width: 100%;
+            background: #e8652b;
+            color: #ffffff;
+            border: none;
+            padding: 14px 0;
+            font-family: 'Rajdhani', 'Noto Sans SC', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.15s ease;
+        }
+
+        .start-btn:hover {
+            background: #f07a3a;
+        }
+
+        .start-btn:active {
+            background: #d05a22;
+        }
+
+        /* ===== 操作说明 ===== */
+        .controls-info {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #1a1a1e;
+            border: 1px solid #2a2a2e;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
+        .controls-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-key {
+            display: inline-block;
+            background: #2a2a2e;
+            color: #ccc;
+            padding: 3px 8px;
+            font-family: 'Rajdhani', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid #3a3a3e;
+        }
+
+        .control-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 480px) {
+            .title {
+                font-size: 34px;
+            }
+
+            .game-card-inner {
+                flex-direction: column;
+                gap: 14px;
+            }
+
+            .game-image {
+                width: 100%;
+                min-width: unset;
+                height: 100px;
+            }
+
+            .controls-row {
+                gap: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">游戏大厅</h1>
+            <p class="subtitle">选择游戏开始游玩</p>
+        </div>
+
+        <div class="game-card">
+            <div class="game-card-inner">
+                <div class="game-info">
+                    <h2 class="game-name">3D 赛车竞速</h2>
+                    <p class="game-desc">
+                        在环形赛道上与 AI 对手一决高下！体验真实的物理碰撞、飘移和竞速乐趣。
+                    </p>
+                    <div class="game-features">
+                        <div class="feature-item">3D 视觉效果</div>
+                        <div class="feature-item">真实物理碰撞</div>
+                        <div class="feature-item">三圈计时赛</div>
+                        <div class="feature-item">AI 对手</div>
+                    </div>
+                </div>
+                <div class="game-image"></div>
+            </div>
+            <div class="btn-row">
+                <a href="racing.html" class="start-btn">开始比赛</a>
+            </div>
+        </div>
+
+        <div class="controls-info">
+            <div class="controls-title">操作说明</div>
+            <div class="controls-row">
+                <div class="control-item">
+                    <span class="control-key">W / ↑</span>
+                    <span class="control-desc">加速前进</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">S / ↓</span>
+                    <span class="control-desc">倒车减速</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">A / ←</span>
+                    <span class="control-desc">左转</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">D / →</span>
+                    <span class="control-desc">右转</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">SPACE</span>
+                    <span class="control-desc">手刹飘移</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
